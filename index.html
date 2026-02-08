@@ -276,6 +276,13 @@
         }
 
         updateUI();
+        // Service Worker Register karne ke liye
+        if ('service-worker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+            .then(() => console.log("Offline Mode Ready!"))
+            .catch(err => console.log("Offline Error:", err));
+        }
     </script>
+    <script src="service-worker.js"></script>
 </body>
 </html>
