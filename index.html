@@ -3,84 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline Pro Budgeter</title>
+    <title>Elite Budget Pro</title>
     <style>
-        /* CSS Settings (Same as before for modern look) */
-        :root { --primary: #6c5ce7; --success: #00b894; --danger: #ff7675; --bg: #0f0c29; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .app-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; }
-        .btn-add { width: 100%; padding: 12px; background: var(--success); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .history-item { background: rgba(255,255,255,0.05); padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; border-left: 4px solid var(--danger); }
-        .btn-small { padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; border: none; margin-left: 5px; color: white; }
-        .edit-btn { background: #f1c40f; color: black; }
-        .del-btn { background: #e74c3c; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        :root {
+            --accent: #7d5fff;
+            --accent-glow: rgba(125, 95, 255, 0.4);
+            --success: #00d2d3;
+            --danger: #ff6b6b;
+            --bg: #050505;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --input-bg: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(125, 95, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 210, 211, 0.1) 0%, transparent 40%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h2 { font-weight: 800; letter-spacing: -1px; font-size: 1.5rem; }
+
+        /* Stats Section */
+        .balance-display {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 25px;
+        }
+
+        .balance-display h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 5px 0;
+            background: linear-gradient(to right, #fff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Input Group */
+        .input-group { margin-bottom: 15px; }
+        
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-set {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-set:hover { transform: scale(1.05); background: #8e75ff; }
+
+        /* Expense List */
+        .history-label { font-weight: 600; font-size: 0.9rem; color: #888; margin-bottom: 12px; display: block; }
+        
+        .history-list {
+            list-style: none;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding-right: 5px;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .item {
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--danger);
+            animation: slideIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .item-info b { display: block; font-size: 1rem; }
+        .item-info small { color: #888; }
+
+        .actions { display: flex; gap: 8px; }
+        .btn-icon {
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .edit { background: #EAB308; color: #000; }
+        .del { background: #EF4444; color: #fff; }
+
+        /* Main Action Button */
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            border: none;
+            border-radius: 18px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px var(--accent-glow);
+            transition: 0.3s;
+        }
+
+        .btn-primary:active { transform: scale(0.96); }
+
+        .reset-text {
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+            color: #555;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-card">
-        <h2>Offline Budget Tracker</h2>
-        
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <input type="number" id="salInput" placeholder="Set Salary">
-            <button onclick="setSalary()" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:0 15px; cursor:pointer;">Set</button>
+    <div class="container">
+        <div class="glass-card">
+            <div class="header">
+                <h2>ELITE BUDGET</h2>
+            </div>
+
+            <div class="salary-setter" style="display: flex; gap: 10px; margin-bottom: 25px;">
+                <input type="number" id="salInput" placeholder="Set Monthly Salary">
+                <button class="btn-set" onclick="setSalary()">Set</button>
+            </div>
+
+            <div class="balance-display">
+                <small style="color: #888; text-transform: uppercase; letter-spacing: 1px;">Remaining Funds</small>
+                <h1 id="balDisplay">$0.00</h1>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem;">
+                    <span style="color: #888;">Spent: <b id="spentDisplay" style="color: var(--danger);">$0</b></span>
+                    <span style="color: #888;">Budget: <b id="totalSal" style="color: var(--success);">$0</b></span>
+                </div>
+            </div>
+
+            <span class="history-label">TRANSACTION HISTORY</span>
+            <ul class="history-list" id="histList"></ul>
+
+            <div class="input-group">
+                <input type="text" id="itemName" placeholder="What did you pay for?">
+            </div>
+            <div class="input-group">
+                <input type="number" id="itemAmt" placeholder="Amount (e.g. 150)">
+            </div>
+            
+            <button class="btn-primary" id="mainBtn" onclick="handleExpense()">Deduct from Salary</button>
+            
+            <span class="reset-text" onclick="resetAll()">Clear Data & Restore Database</span>
         </div>
-
-        <div style="text-align:center; background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:20px;">
-            <small>Remaining</small>
-            <h1 id="balDisplay">$0.00</h1>
-            <div style="font-size: 0.8rem;">Spent: <span id="spentDisplay">$0</span></div>
-        </div>
-
-        <h4>History</h4>
-        <ul id="histList" style="list-style:none; padding:0; max-height:200px; overflow-y:auto;"></ul>
-
-        <input type="text" id="itemName" placeholder="What was the expense?">
-        <input type="number" id="itemAmt" placeholder="Amount">
-        <button class="btn-add" id="mainBtn" onclick="handleExpense()">Deduct Amount</button>
-        
-        <p style="text-align:center; font-size:0.7rem; margin-top:20px; color:#aaa;">Works 100% Offline</p>
     </div>
 
     <script>
-        /* --- OFFLINE DATA LOGIC (localStorage) --- */
-        let salary = parseFloat(localStorage.getItem('off_sal')) || 0;
-        let expenses = JSON.parse(localStorage.getItem('off_exp')) || [];
+        // --- 1. DATA MIGRATION & RESTORE (The most important part) ---
+        function restoreHistory() {
+            // Check all possible storage keys used in previous versions
+            const oldExp = localStorage.getItem('userExpenses') || localStorage.getItem('off_exp');
+            const oldSal = localStorage.getItem('userSalary') || localStorage.getItem('off_sal');
+
+            // If found, move them to our new permanent keys
+            if (oldExp && !localStorage.getItem('final_exp')) {
+                localStorage.setItem('final_exp', oldExp);
+            }
+            if (oldSal && !localStorage.getItem('final_sal')) {
+                localStorage.setItem('final_sal', oldSal);
+            }
+        }
+        restoreHistory();
+
+        // --- 2. LOGIC ---
+        let salary = parseFloat(localStorage.getItem('final_sal')) || 0;
+        let expenses = JSON.parse(localStorage.getItem('final_exp')) || [];
         let editId = null;
+
+        const balDisplay = document.getElementById('balDisplay');
+        const spentDisplay = document.getElementById('spentDisplay');
+        const totalSalDisplay = document.getElementById('totalSal');
+        const histList = document.getElementById('histList');
+        const mainBtn = document.getElementById('mainBtn');
 
         function setSalary() {
             const val = document.getElementById('salInput').value;
-            if (val > 0) {
-                salary = parseFloat(val);
-                localStorage.setItem('off_sal', salary);
-                render();
-            }
+            if (val <= 0) return alert("Please enter a valid salary");
+            salary = parseFloat(val);
+            localStorage.setItem('final_sal', salary);
+            render();
+            document.getElementById('salInput').value = '';
         }
 
         function handleExpense() {
             const name = document.getElementById('itemName').value;
             const amt = parseFloat(document.getElementById('itemAmt').value);
-            if (!name || isNaN(amt)) return alert("Sahi details dalein");
+
+            if (!name || isNaN(amt) || amt <= 0) return alert("Enter accurate details!");
+            if (salary === 0) return alert("Set your salary first!");
 
             if (editId) {
                 expenses = expenses.map(e => e.id === editId ? { ...e, name, amt } : e);
                 editId = null;
-                document.getElementById('mainBtn').innerText = "Deduct Amount";
+                mainBtn.innerText = "Deduct from Salary";
+                mainBtn.style.background = "var(--accent)";
             } else {
                 expenses.push({ id: Date.now(), name, amt });
             }
 
-            localStorage.setItem('off_exp', JSON.stringify(expenses));
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemAmt').value = '';
-            render();
+            save();
+            clearInputs();
         }
 
         function deleteItem(id) {
-            expenses = expenses.filter(e => e.id !== id);
-            localStorage.setItem('off_exp', JSON.stringify(expenses));
-            render();
+            if(confirm("Remove this transaction?")) {
+                expenses = expenses.filter(e => e.id !== id);
+                save();
+            }
         }
 
         function editItem(id) {
@@ -88,30 +298,59 @@
             document.getElementById('itemName').value = item.name;
             document.getElementById('itemAmt').value = item.amt;
             editId = id;
-            document.getElementById('mainBtn').innerText = "Update Expense";
+            mainBtn.innerText = "Update Transaction";
+            mainBtn.style.background = "#EAB308";
+            document.getElementById('itemName').focus();
+        }
+
+        function save() {
+            localStorage.setItem('final_exp', JSON.stringify(expenses));
+            render();
         }
 
         function render() {
-            const list = document.getElementById('histList');
-            list.innerHTML = '';
-            let spent = 0;
-            expenses.forEach(e => {
-                spent += e.amt;
+            histList.innerHTML = '';
+            let totalSpent = 0;
+
+            expenses.slice().reverse().forEach(e => {
+                totalSpent += e.amt;
                 const li = document.createElement('li');
-                li.className = 'history-item';
+                li.className = 'item';
                 li.innerHTML = `
-                    <div><b>${e.name}</b> <br> <small>-$${e.amt}</small></div>
-                    <div>
-                        <button class="btn-small edit-btn" onclick="editItem(${e.id})">Edit</button>
-                        <button class="btn-small del-btn" onclick="deleteItem(${e.id})">X</button>
-                    </div>`;
-                list.appendChild(li);
+                    <div class="item-info">
+                        <b>${e.name}</b>
+                        <small>-$${e.amt.toFixed(2)}</small>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-icon edit" onclick="editItem(${e.id})">Edit</button>
+                        <button class="btn-icon del" onclick="deleteItem(${e.id})">✕</button>
+                    </div>
+                `;
+                histList.appendChild(li);
             });
-            document.getElementById('balDisplay').innerText = `$${(salary - spent).toFixed(2)}`;
-            document.getElementById('spentDisplay').innerText = `$${spent.toFixed(2)}`;
+
+            const remaining = salary - totalSpent;
+            balDisplay.innerText = `$${remaining.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            spentDisplay.innerText = `$${totalSpent.toLocaleString()}`;
+            totalSalDisplay.innerText = `$${salary.toLocaleString()}`;
+
+            // Visual warning
+            balDisplay.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
         }
 
-        /* --- OFFLINE SERVICE WORKER LINKING --- */
+        function clearInputs() {
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemAmt').value = '';
+        }
+
+        function resetAll() {
+            if(confirm("This will clear everything. Are you sure?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // Service Worker Link
         if ('service-worker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js');
