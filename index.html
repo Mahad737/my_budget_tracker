@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Budget Tracker</title>
+    <title>Ultimate Budget Tracker Pro</title>
     <style>
-        /* --- CSS STYLES --- */
         :root {
             --primary: #6c5ce7;
             --secondary: #a29bfe;
@@ -15,12 +14,7 @@
             --text: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 
         body {
             background: radial-gradient(circle at top left, #1e1e2f, #0f0c29);
@@ -32,45 +26,30 @@
             padding: 20px;
         }
 
-        /* Glassmorphism Container */
         .app-card {
             background: var(--glass);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 40px;
+            padding: 30px;
             width: 100%;
             max-width: 450px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         header h2 { text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
 
-        /* Salary Input Section */
-        .salary-setter {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
+        .salary-setter { display: flex; gap: 10px; margin-bottom: 20px; }
 
         input {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 15px;
+            padding: 12px;
             border-radius: 12px;
             color: white;
             outline: none;
             width: 100%;
-            transition: 0.3s;
         }
-
-        input:focus { border-color: var(--secondary); background: rgba(255, 255, 255, 0.1); }
 
         .btn-set {
             background: var(--primary);
@@ -82,7 +61,6 @@
             font-weight: bold;
         }
 
-        /* Dashboard Stats */
         .main-display {
             text-align: center;
             background: rgba(0, 0, 0, 0.2);
@@ -91,7 +69,7 @@
             margin-bottom: 25px;
         }
 
-        .main-display h1 { font-size: 2.5rem; color: var(--success); }
+        #balanceDisplay { font-size: 2.5rem; color: var(--success); transition: 0.3s; }
 
         .progress-bar-wrap {
             height: 8px;
@@ -101,36 +79,39 @@
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--success);
-            transition: width 0.5s ease;
-        }
+        .progress-fill { height: 100%; width: 0%; background: var(--success); transition: width 0.5s ease; }
 
-        /* List Items */
-        .history-list {
-            list-style: none;
-            max-height: 180px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
+        .history-list { list-style: none; max-height: 250px; overflow-y: auto; margin-bottom: 20px; }
 
         .history-item {
             background: rgba(255, 255, 255, 0.05);
-            margin: 8px 0;
-            padding: 12px 15px;
+            margin: 10px 0;
+            padding: 12px;
             border-radius: 12px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
             border-left: 4px solid var(--danger);
-            animation: fadeIn 0.4s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .item-info { display: flex; justify-content: space-between; align-items: center; }
+
+        .item-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+        .btn-action {
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: white;
+        }
+
+        .edit-btn { background: #fdcb6e; color: #2d3436; }
+        .delete-btn { background: var(--danger); }
 
         .btn-add {
+            margin-top: 15px;
             width: 100%;
             padding: 14px;
             background: var(--success);
@@ -139,17 +120,15 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
         }
 
         .btn-reset {
             display: block;
             margin: 20px auto 0;
             background: transparent;
-            color: var(--danger);
+            color: #b2bec3;
             border: none;
             cursor: pointer;
-            font-size: 0.8rem;
             text-decoration: underline;
         }
     </style>
@@ -157,12 +136,10 @@
 <body>
 
     <div class="app-card">
-        <header>
-            <h2>BUDGET TRACKER</h2>
-        </header>
+        <header><h2>BUDGET TRACKER</h2></header>
 
         <div class="salary-setter">
-            <input type="number" id="salaryInput" placeholder="Enter Monthly Salary">
+            <input type="number" id="salaryInput" placeholder="Set Monthly Salary">
             <button class="btn-set" onclick="setSalary()">Set</button>
         </div>
 
@@ -178,32 +155,33 @@
             </div>
         </div>
 
-        <h4>Expense History</h4>
+        <h4>History</h4>
         <ul class="history-list" id="historyList"></ul>
 
         <div class="add-expense">
-            <input type="text" id="expName" placeholder="Expense description..." style="margin-bottom: 10px;">
+            <input type="text" id="expName" placeholder="What did you buy?" style="margin-bottom: 10px;">
             <input type="number" id="expAmount" placeholder="Amount">
-            <button class="btn-add" onclick="addExpense()">Deduct Expense</button>
+            <button class="btn-add" id="addBtn" onclick="addExpense()">Deduct Expense</button>
         </div>
 
         <button class="btn-reset" onclick="resetAll()">Clear All History</button>
     </div>
 
     <script>
-        /* --- JAVASCRIPT LOGIC --- */
         let salary = parseFloat(localStorage.getItem('userSalary')) || 0;
         let expenses = JSON.parse(localStorage.getItem('userExpenses')) || [];
+        let editId = null;
 
         const balanceDisplay = document.getElementById('balanceDisplay');
         const salaryValue = document.getElementById('salaryValue');
         const spentValue = document.getElementById('spentValue');
         const historyList = document.getElementById('historyList');
         const progressBar = document.getElementById('progressBar');
+        const addBtn = document.getElementById('addBtn');
 
         function setSalary() {
             const val = document.getElementById('salaryInput').value;
-            if (val === "" || val <= 0) return alert("Enter a valid salary");
+            if (val === "" || val <= 0) return alert("Enter valid salary");
             salary = parseFloat(val);
             localStorage.setItem('userSalary', salary);
             updateUI();
@@ -213,47 +191,83 @@
             const name = document.getElementById('expName').value;
             const amt = document.getElementById('expAmount').value;
 
-            if (name === "" || amt === "" || amt <= 0) return alert("Fill in details correctly");
-            if (salary === 0) return alert("Set your salary first!");
+            if (name === "" || amt === "" || amt <= 0) return alert("Fill details correctly");
+            if (salary === 0) return alert("Set salary first!");
 
-            const expense = { id: Date.now(), name, amt: parseFloat(amt) };
-            expenses.push(expense);
-            localStorage.setItem('userExpenses', JSON.stringify(expenses));
-            
+            if (editId) {
+                // Update existing
+                expenses = expenses.map(item => 
+                    item.id === editId ? { ...item, name, amt: parseFloat(amt) } : item
+                );
+                editId = null;
+                addBtn.innerText = "Deduct Expense";
+                addBtn.style.background = "var(--success)";
+            } else {
+                // Add new
+                const expense = { id: Date.now(), name, amt: parseFloat(amt) };
+                expenses.push(expense);
+            }
+
+            saveAndUpdate();
             document.getElementById('expName').value = '';
             document.getElementById('expAmount').value = '';
+        }
+
+        function deleteExpense(id) {
+            if (confirm("Delete this expense?")) {
+                expenses = expenses.filter(item => item.id !== id);
+                saveAndUpdate();
+            }
+        }
+
+        function editExpense(id) {
+            const item = expenses.find(i => i.id === id);
+            document.getElementById('expName').value = item.name;
+            document.getElementById('expAmount').value = item.amt;
+            editId = id;
+            addBtn.innerText = "Update Expense";
+            addBtn.style.background = "#fdcb6e";
+            document.getElementById('expName').focus();
+        }
+
+        function saveAndUpdate() {
+            localStorage.setItem('userExpenses', JSON.stringify(expenses));
             updateUI();
         }
 
         function updateUI() {
-            // Clear list
             historyList.innerHTML = '';
-            
-            // Calculate totals
             const totalSpent = expenses.reduce((acc, item) => acc + item.amt, 0);
             const remaining = salary - totalSpent;
 
-            // Render history
             expenses.forEach(item => {
                 const li = document.createElement('li');
                 li.className = 'history-item';
-                li.innerHTML = `${item.name} <span>-$${item.amt.toFixed(2)}</span>`;
+                li.innerHTML = `
+                    <div class="item-info">
+                        <span>${item.name}</span>
+                        <span>-$${item.amt.toFixed(2)}</span>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-action edit-btn" onclick="editExpense(${item.id})">Edit</button>
+                        <button class="btn-action delete-btn" onclick="deleteExpense(${item.id})">Delete</button>
+                    </div>
+                `;
                 historyList.appendChild(li);
             });
 
-            // Update text
             balanceDisplay.innerText = `$${remaining.toFixed(2)}`;
             salaryValue.innerText = `$${salary.toFixed(2)}`;
             spentValue.innerText = `$${totalSpent.toFixed(2)}`;
 
-            // Update Progress Bar
             const percent = salary > 0 ? (totalSpent / salary) * 100 : 0;
             progressBar.style.width = `${Math.min(percent, 100)}%`;
             progressBar.style.background = percent > 85 ? '#ff7675' : '#00b894';
+            balanceDisplay.style.color = remaining < 0 ? '#ff7675' : '#00b894';
         }
 
         function resetAll() {
-            if(confirm("Delete everything?")) {
+            if(confirm("Everything will be deleted! Are you sure?")) {
                 localStorage.clear();
                 salary = 0;
                 expenses = [];
@@ -261,7 +275,6 @@
             }
         }
 
-        // Run on load
         updateUI();
     </script>
 </body>
