@@ -1,0 +1,15 @@
+{
+  "name": "Elite Budget Pro",
+  "short_name": "BudgetPro",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#7d5fff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2535/2535043.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
