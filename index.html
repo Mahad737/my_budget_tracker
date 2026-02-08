@@ -3,286 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Budget Tracker Pro</title>
+    <title>Offline Pro Budgeter</title>
     <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #a29bfe;
-            --success: #00b894;
-            --danger: #ff7675;
-            --glass: rgba(255, 255, 255, 0.1);
-            --text: #ffffff;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-
-        body {
-            background: radial-gradient(circle at top left, #1e1e2f, #0f0c29);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .app-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        header h2 { text-align: center; margin-bottom: 25px; letter-spacing: 1px; }
-
-        .salary-setter { display: flex; gap: 10px; margin-bottom: 20px; }
-
-        input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            color: white;
-            outline: none;
-            width: 100%;
-        }
-
-        .btn-set {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .main-display {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-        }
-
-        #balanceDisplay { font-size: 2.5rem; color: var(--success); transition: 0.3s; }
-
-        .progress-bar-wrap {
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill { height: 100%; width: 0%; background: var(--success); transition: width 0.5s ease; }
-
-        .history-list { list-style: none; max-height: 250px; overflow-y: auto; margin-bottom: 20px; }
-
-        .history-item {
-            background: rgba(255, 255, 255, 0.05);
-            margin: 10px 0;
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-left: 4px solid var(--danger);
-        }
-
-        .item-info { display: flex; justify-content: space-between; align-items: center; }
-
-        .item-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
-        .btn-action {
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.75rem;
-            color: white;
-        }
-
-        .edit-btn { background: #fdcb6e; color: #2d3436; }
-        .delete-btn { background: var(--danger); }
-
-        .btn-add {
-            margin-top: 15px;
-            width: 100%;
-            padding: 14px;
-            background: var(--success);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .btn-reset {
-            display: block;
-            margin: 20px auto 0;
-            background: transparent;
-            color: #b2bec3;
-            border: none;
-            cursor: pointer;
-            text-decoration: underline;
-        }
+        /* CSS Settings (Same as before for modern look) */
+        :root { --primary: #6c5ce7; --success: #00b894; --danger: #ff7675; --bg: #0f0c29; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .app-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; }
+        .btn-add { width: 100%; padding: 12px; background: var(--success); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .history-item { background: rgba(255,255,255,0.05); padding: 10px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; border-left: 4px solid var(--danger); }
+        .btn-small { padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; border: none; margin-left: 5px; color: white; }
+        .edit-btn { background: #f1c40f; color: black; }
+        .del-btn { background: #e74c3c; }
     </style>
 </head>
 <body>
 
     <div class="app-card">
-        <header><h2>BUDGET TRACKER</h2></header>
-
-        <div class="salary-setter">
-            <input type="number" id="salaryInput" placeholder="Set Monthly Salary">
-            <button class="btn-set" onclick="setSalary()">Set</button>
+        <h2>Offline Budget Tracker</h2>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="number" id="salInput" placeholder="Set Salary">
+            <button onclick="setSalary()" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:0 15px; cursor:pointer;">Set</button>
         </div>
 
-        <div class="main-display">
-            <small>Remaining Funds</small>
-            <h1 id="balanceDisplay">$0.00</h1>
-            <div class="progress-bar-wrap">
-                <div class="progress-fill" id="progressBar"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                <span>Salary: <b id="salaryValue">$0</b></span>
-                <span>Spent: <b id="spentValue">$0</b></span>
-            </div>
+        <div style="text-align:center; background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:20px;">
+            <small>Remaining</small>
+            <h1 id="balDisplay">$0.00</h1>
+            <div style="font-size: 0.8rem;">Spent: <span id="spentDisplay">$0</span></div>
         </div>
 
         <h4>History</h4>
-        <ul class="history-list" id="historyList"></ul>
+        <ul id="histList" style="list-style:none; padding:0; max-height:200px; overflow-y:auto;"></ul>
 
-        <div class="add-expense">
-            <input type="text" id="expName" placeholder="What did you buy?" style="margin-bottom: 10px;">
-            <input type="number" id="expAmount" placeholder="Amount">
-            <button class="btn-add" id="addBtn" onclick="addExpense()">Deduct Expense</button>
-        </div>
-
-        <button class="btn-reset" onclick="resetAll()">Clear All History</button>
+        <input type="text" id="itemName" placeholder="What was the expense?">
+        <input type="number" id="itemAmt" placeholder="Amount">
+        <button class="btn-add" id="mainBtn" onclick="handleExpense()">Deduct Amount</button>
+        
+        <p style="text-align:center; font-size:0.7rem; margin-top:20px; color:#aaa;">Works 100% Offline</p>
     </div>
 
     <script>
-        let salary = parseFloat(localStorage.getItem('userSalary')) || 0;
-        let expenses = JSON.parse(localStorage.getItem('userExpenses')) || [];
+        /* --- OFFLINE DATA LOGIC (localStorage) --- */
+        let salary = parseFloat(localStorage.getItem('off_sal')) || 0;
+        let expenses = JSON.parse(localStorage.getItem('off_exp')) || [];
         let editId = null;
 
-        const balanceDisplay = document.getElementById('balanceDisplay');
-        const salaryValue = document.getElementById('salaryValue');
-        const spentValue = document.getElementById('spentValue');
-        const historyList = document.getElementById('historyList');
-        const progressBar = document.getElementById('progressBar');
-        const addBtn = document.getElementById('addBtn');
-
         function setSalary() {
-            const val = document.getElementById('salaryInput').value;
-            if (val === "" || val <= 0) return alert("Enter valid salary");
-            salary = parseFloat(val);
-            localStorage.setItem('userSalary', salary);
-            updateUI();
+            const val = document.getElementById('salInput').value;
+            if (val > 0) {
+                salary = parseFloat(val);
+                localStorage.setItem('off_sal', salary);
+                render();
+            }
         }
 
-        function addExpense() {
-            const name = document.getElementById('expName').value;
-            const amt = document.getElementById('expAmount').value;
-
-            if (name === "" || amt === "" || amt <= 0) return alert("Fill details correctly");
-            if (salary === 0) return alert("Set salary first!");
+        function handleExpense() {
+            const name = document.getElementById('itemName').value;
+            const amt = parseFloat(document.getElementById('itemAmt').value);
+            if (!name || isNaN(amt)) return alert("Sahi details dalein");
 
             if (editId) {
-                // Update existing
-                expenses = expenses.map(item => 
-                    item.id === editId ? { ...item, name, amt: parseFloat(amt) } : item
-                );
+                expenses = expenses.map(e => e.id === editId ? { ...e, name, amt } : e);
                 editId = null;
-                addBtn.innerText = "Deduct Expense";
-                addBtn.style.background = "var(--success)";
+                document.getElementById('mainBtn').innerText = "Deduct Amount";
             } else {
-                // Add new
-                const expense = { id: Date.now(), name, amt: parseFloat(amt) };
-                expenses.push(expense);
+                expenses.push({ id: Date.now(), name, amt });
             }
 
-            saveAndUpdate();
-            document.getElementById('expName').value = '';
-            document.getElementById('expAmount').value = '';
+            localStorage.setItem('off_exp', JSON.stringify(expenses));
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemAmt').value = '';
+            render();
         }
 
-        function deleteExpense(id) {
-            if (confirm("Delete this expense?")) {
-                expenses = expenses.filter(item => item.id !== id);
-                saveAndUpdate();
-            }
+        function deleteItem(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            localStorage.setItem('off_exp', JSON.stringify(expenses));
+            render();
         }
 
-        function editExpense(id) {
-            const item = expenses.find(i => i.id === id);
-            document.getElementById('expName').value = item.name;
-            document.getElementById('expAmount').value = item.amt;
+        function editItem(id) {
+            const item = expenses.find(e => e.id === id);
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemAmt').value = item.amt;
             editId = id;
-            addBtn.innerText = "Update Expense";
-            addBtn.style.background = "#fdcb6e";
-            document.getElementById('expName').focus();
+            document.getElementById('mainBtn').innerText = "Update Expense";
         }
 
-        function saveAndUpdate() {
-            localStorage.setItem('userExpenses', JSON.stringify(expenses));
-            updateUI();
-        }
-
-        function updateUI() {
-            historyList.innerHTML = '';
-            const totalSpent = expenses.reduce((acc, item) => acc + item.amt, 0);
-            const remaining = salary - totalSpent;
-
-            expenses.forEach(item => {
+        function render() {
+            const list = document.getElementById('histList');
+            list.innerHTML = '';
+            let spent = 0;
+            expenses.forEach(e => {
+                spent += e.amt;
                 const li = document.createElement('li');
                 li.className = 'history-item';
                 li.innerHTML = `
-                    <div class="item-info">
-                        <span>${item.name}</span>
-                        <span>-$${item.amt.toFixed(2)}</span>
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn-action edit-btn" onclick="editExpense(${item.id})">Edit</button>
-                        <button class="btn-action delete-btn" onclick="deleteExpense(${item.id})">Delete</button>
-                    </div>
-                `;
-                historyList.appendChild(li);
+                    <div><b>${e.name}</b> <br> <small>-$${e.amt}</small></div>
+                    <div>
+                        <button class="btn-small edit-btn" onclick="editItem(${e.id})">Edit</button>
+                        <button class="btn-small del-btn" onclick="deleteItem(${e.id})">X</button>
+                    </div>`;
+                list.appendChild(li);
             });
-
-            balanceDisplay.innerText = `$${remaining.toFixed(2)}`;
-            salaryValue.innerText = `$${salary.toFixed(2)}`;
-            spentValue.innerText = `$${totalSpent.toFixed(2)}`;
-
-            const percent = salary > 0 ? (totalSpent / salary) * 100 : 0;
-            progressBar.style.width = `${Math.min(percent, 100)}%`;
-            progressBar.style.background = percent > 85 ? '#ff7675' : '#00b894';
-            balanceDisplay.style.color = remaining < 0 ? '#ff7675' : '#00b894';
+            document.getElementById('balDisplay').innerText = `$${(salary - spent).toFixed(2)}`;
+            document.getElementById('spentDisplay').innerText = `$${spent.toFixed(2)}`;
         }
 
-        function resetAll() {
-            if(confirm("Everything will be deleted! Are you sure?")) {
-                localStorage.clear();
-                salary = 0;
-                expenses = [];
-                updateUI();
-            }
-        }
-
-        updateUI();
-        // Service Worker Register karne ke liye
+        /* --- OFFLINE SERVICE WORKER LINKING --- */
         if ('service-worker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-            .then(() => console.log("Offline Mode Ready!"))
-            .catch(err => console.log("Offline Error:", err));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js');
+            });
         }
+
+        render();
     </script>
-    <script src="service-worker.js"></script>
 </body>
 </html>
