@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#7d5fff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Budget Pro</title>
-    <link rel="manifest" href="manifest.json">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
@@ -232,6 +230,10 @@
     </div>
 
     <script>
+        <script>
+    // --- 1. CONFIGURATION (https://script.google.com/macros/s/AKfycbys9ISig44hTHuOKRKOSImsD8ekouem6D_hmz_Fyr2xKjzeUBFbGY2DYYbTnsi5cBPs/exec) ---
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbys9ISig44hTHuOKRKOSImsD8ekouem6D_hmz_Fyr2xKjzeUBFbGY2DYYbTnsi5cBPs/exec";
+
         // --- 1. DATA MIGRATION & RESTORE (The most important part) ---
         function restoreHistory() {
             // Check all possible storage keys used in previous versions
@@ -361,14 +363,5 @@
 
         render();
     </script>
-    <script>
-  if ('service-worker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js');
-    });
-  }
-</script>
 </body>
 </html>
-
-
