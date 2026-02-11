@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Budget Pro</title>
+    <title>Elite Budget Pro + Cloud Sync</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-
         :root {
             --accent: #7d5fff;
             --accent-glow: rgba(125, 95, 255, 0.4);
@@ -16,282 +15,143 @@
             --card-bg: rgba(255, 255, 255, 0.06);
             --input-bg: rgba(255, 255, 255, 0.08);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(125, 95, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 210, 211, 0.1) 0%, transparent 40%);
+            background-image: radial-gradient(circle at 10% 20%, rgba(125, 95, 255, 0.1) 0%, transparent 40%);
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
-            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Glass Card */
+        .container { width: 100%; max-width: 420px; padding: 20px; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .glass-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 32px;
             padding: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
-
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h2 { font-weight: 800; letter-spacing: -1px; font-size: 1.5rem; }
-
-        /* Stats Section */
-        .balance-display {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-            border-radius: 24px;
-            padding: 25px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 25px;
-        }
-
-        .balance-display h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin: 5px 0;
-            background: linear-gradient(to right, #fff, #a29bfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Input Group */
-        .input-group { margin-bottom: 15px; }
-        
+        .balance-display { background: rgba(255,255,255,0.03); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 25px; }
+        .balance-display h1 { font-size: 2.8rem; background: linear-gradient(to right, #fff, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         input {
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--input-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
+            width: 100%; padding: 16px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; color: #fff; margin-bottom: 12px; outline: none; transition: 0.3s;
         }
-
-        input:focus {
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .btn-set {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-set:hover { transform: scale(1.05); background: #8e75ff; }
-
-        /* Expense List */
-        .history-label { font-weight: 600; font-size: 0.9rem; color: #888; margin-bottom: 12px; display: block; }
-        
-        .history-list {
-            list-style: none;
-            max-height: 220px;
-            overflow-y: auto;
-            margin-bottom: 25px;
-            padding-right: 5px;
-        }
-
-        .history-list::-webkit-scrollbar { width: 4px; }
-        .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-        .item {
-            background: rgba(255,255,255,0.03);
-            margin-bottom: 12px;
-            padding: 15px;
-            border-radius: 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid var(--danger);
-            animation: slideIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .item-info b { display: block; font-size: 1rem; }
-        .item-info small { color: #888; }
-
-        .actions { display: flex; gap: 8px; }
-        .btn-icon {
-            padding: 8px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .edit { background: #EAB308; color: #000; }
-        .del { background: #EF4444; color: #fff; }
-
-        /* Main Action Button */
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .btn-primary {
-            width: 100%;
-            padding: 18px;
-            background: var(--accent);
-            border: none;
-            border-radius: 18px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 10px 20px var(--accent-glow);
-            transition: 0.3s;
+            width: 100%; padding: 18px; background: var(--accent); border: none; border-radius: 18px;
+            color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s;
         }
-
-        .btn-primary:active { transform: scale(0.96); }
-
-        .reset-text {
-            text-align: center;
-            display: block;
-            margin-top: 20px;
-            color: #555;
-            font-size: 0.8rem;
-            cursor: pointer;
-            text-decoration: none;
+        .history-list { list-style: none; max-height: 180px; overflow-y: auto; margin: 20px 0; }
+        .item {
+            background: rgba(255,255,255,0.03); margin-bottom: 10px; padding: 15px;
+            border-radius: 15px; display: flex; justify-content: space-between; border-left: 4px solid var(--danger);
         }
+        .edit-btn { background: #EAB308; padding: 5px 10px; border-radius: 8px; border:none; cursor:pointer;}
+        .del-btn { background: #EF4444; color: white; padding: 5px 10px; border-radius: 8px; border:none; cursor:pointer;}
+        .sync-status { font-size: 0.65rem; text-align: center; color: #888; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="glass-card">
-            <div class="header">
-                <h2>ELITE BUDGET</h2>
-            </div>
+            <h2 style="text-align:center; margin-bottom:20px; font-weight:800;">ELITE BUDGET</h2>
 
-            <div class="salary-setter" style="display: flex; gap: 10px; margin-bottom: 25px;">
-                <input type="number" id="salInput" placeholder="Set Monthly Salary">
-                <button class="btn-set" onclick="setSalary()">Set</button>
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                <input type="number" id="salInput" placeholder="Set Salary" style="margin:0;">
+                <button onclick="setSalary()" style="background:var(--accent); border:none; padding:0 15px; border-radius:14px; cursor:pointer; color:white;">Set</button>
             </div>
 
             <div class="balance-display">
-                <small style="color: #888; text-transform: uppercase; letter-spacing: 1px;">Remaining Funds</small>
+                <small style="color:#888;">REMAINING</small>
                 <h1 id="balDisplay">$0.00</h1>
-                <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem;">
-                    <span style="color: #888;">Spent: <b id="spentDisplay" style="color: var(--danger);">$0</b></span>
-                    <span style="color: #888;">Budget: <b id="totalSal" style="color: var(--success);">$0</b></span>
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.8rem;">
+                    <span>Spent: <b id="spentDisplay" style="color:var(--danger);">$0</b></span>
+                    <span>Budget: <b id="totalSal" style="color:var(--success);">$0</b></span>
                 </div>
             </div>
 
-            <span class="history-label">TRANSACTION HISTORY</span>
             <ul class="history-list" id="histList"></ul>
 
-            <div class="input-group">
-                <input type="text" id="itemName" placeholder="What did you pay for?">
-            </div>
-            <div class="input-group">
-                <input type="number" id="itemAmt" placeholder="Amount (e.g. 150)">
-            </div>
+            <input type="text" id="itemName" placeholder="Item Name">
+            <input type="number" id="itemAmt" placeholder="Amount">
             
-            <button class="btn-primary" id="mainBtn" onclick="handleExpense()">Deduct from Salary</button>
-            
-            <span class="reset-text" onclick="resetAll()">Clear Data & Restore Database</span>
+            <button class="btn-primary" id="mainBtn" onclick="handleExpense()">Deduct & Sync</button>
+            <div class="sync-status" id="syncStatus">Cloud Sync Active</div>
         </div>
     </div>
 
     <script>
-        <script>
-    // --- 1. CONFIGURATION (https://script.google.com/macros/s/AKfycbys9ISig44hTHuOKRKOSImsD8ekouem6D_hmz_Fyr2xKjzeUBFbGY2DYYbTnsi5cBPs/exec) ---
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbys9ISig44hTHuOKRKOSImsD8ekouem6D_hmz_Fyr2xKjzeUBFbGY2DYYbTnsi5cBPs/exec";
+        // ==========================================
+        // 1. APNA GOOGLE SCRIPT URL YAHAN PASTE KAREIN
+        // ==========================================
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbys9ISig44hTHuOKRKOSImsD8ekouem6D_hmz_Fyr2xKjzeUBFbGY2DYYbTnsi5cBPs/exec"; 
 
-        // --- 1. DATA MIGRATION & RESTORE (The most important part) ---
+        // 2. DATA RESTORE (Purani history ke liye)
         function restoreHistory() {
-            // Check all possible storage keys used in previous versions
             const oldExp = localStorage.getItem('userExpenses') || localStorage.getItem('off_exp');
             const oldSal = localStorage.getItem('userSalary') || localStorage.getItem('off_sal');
-
-            // If found, move them to our new permanent keys
-            if (oldExp && !localStorage.getItem('final_exp')) {
-                localStorage.setItem('final_exp', oldExp);
-            }
-            if (oldSal && !localStorage.getItem('final_sal')) {
-                localStorage.setItem('final_sal', oldSal);
-            }
+            if (oldExp && !localStorage.getItem('final_exp')) localStorage.setItem('final_exp', oldExp);
+            if (oldSal && !localStorage.getItem('final_sal')) localStorage.setItem('final_sal', oldSal);
         }
         restoreHistory();
 
-        // --- 2. LOGIC ---
         let salary = parseFloat(localStorage.getItem('final_sal')) || 0;
         let expenses = JSON.parse(localStorage.getItem('final_exp')) || [];
         let editId = null;
 
-        const balDisplay = document.getElementById('balDisplay');
-        const spentDisplay = document.getElementById('spentDisplay');
-        const totalSalDisplay = document.getElementById('totalSal');
-        const histList = document.getElementById('histList');
-        const mainBtn = document.getElementById('mainBtn');
+        // 3. SYNC FUNCTION
+        function syncWithSheets(name, amount, currentSalary) {
+            if (!GOOGLE_SHEET_URL.includes("http")) return;
+            const status = document.getElementById('syncStatus');
+            status.innerText = "Syncing with Google Sheets...";
+            
+            fetch(GOOGLE_SHEET_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, amount, salary: currentSalary })
+            }).then(() => {
+                status.innerText = "Cloud Sync: Success ✓";
+                setTimeout(() => status.innerText = "Cloud Sync Active", 3000);
+            }).catch(() => status.innerText = "Sync Failed (Offline)");
+        }
 
+        // 4. CORE FUNCTIONS
         function setSalary() {
             const val = document.getElementById('salInput').value;
-            if (val <= 0) return alert("Please enter a valid salary");
-            salary = parseFloat(val);
-            localStorage.setItem('final_sal', salary);
-            render();
-            document.getElementById('salInput').value = '';
+            if (val > 0) {
+                salary = parseFloat(val);
+                localStorage.setItem('final_sal', salary);
+                render();
+            }
         }
 
         function handleExpense() {
             const name = document.getElementById('itemName').value;
             const amt = parseFloat(document.getElementById('itemAmt').value);
-
-            if (!name || isNaN(amt) || amt <= 0) return alert("Enter accurate details!");
-            if (salary === 0) return alert("Set your salary first!");
+            if (!name || isNaN(amt)) return alert("Sahi details daalein!");
 
             if (editId) {
                 expenses = expenses.map(e => e.id === editId ? { ...e, name, amt } : e);
                 editId = null;
-                mainBtn.innerText = "Deduct from Salary";
-                mainBtn.style.background = "var(--accent)";
+                document.getElementById('mainBtn').innerText = "Deduct & Sync";
             } else {
                 expenses.push({ id: Date.now(), name, amt });
+                syncWithSheets(name, amt, salary); // Ye line data sheet mein bhejti hai
             }
-
             save();
-            clearInputs();
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemAmt').value = '';
         }
 
         function deleteItem(id) {
-            if(confirm("Remove this transaction?")) {
+            if(confirm("Delete karein?")) {
                 expenses = expenses.filter(e => e.id !== id);
                 save();
             }
@@ -302,9 +162,7 @@
             document.getElementById('itemName').value = item.name;
             document.getElementById('itemAmt').value = item.amt;
             editId = id;
-            mainBtn.innerText = "Update Transaction";
-            mainBtn.style.background = "#EAB308";
-            document.getElementById('itemName').focus();
+            document.getElementById('mainBtn').innerText = "Update Entry";
         }
 
         function save() {
@@ -313,52 +171,24 @@
         }
 
         function render() {
-            histList.innerHTML = '';
+            const list = document.getElementById('histList');
+            list.innerHTML = '';
             let totalSpent = 0;
-
             expenses.slice().reverse().forEach(e => {
                 totalSpent += e.amt;
                 const li = document.createElement('li');
                 li.className = 'item';
                 li.innerHTML = `
-                    <div class="item-info">
-                        <b>${e.name}</b>
-                        <small>-$${e.amt.toFixed(2)}</small>
-                    </div>
+                    <div><b>${e.name}</b><br><small>-$${e.amt}</small></div>
                     <div class="actions">
-                        <button class="btn-icon edit" onclick="editItem(${e.id})">Edit</button>
-                        <button class="btn-icon del" onclick="deleteItem(${e.id})">✕</button>
-                    </div>
-                `;
-                histList.appendChild(li);
+                        <button class="edit-btn" onclick="editItem(${e.id})">Edit</button>
+                        <button class="del-btn" onclick="deleteItem(${e.id})">X</button>
+                    </div>`;
+                list.appendChild(li);
             });
-
-            const remaining = salary - totalSpent;
-            balDisplay.innerText = `$${remaining.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            spentDisplay.innerText = `$${totalSpent.toLocaleString()}`;
-            totalSalDisplay.innerText = `$${salary.toLocaleString()}`;
-
-            // Visual warning
-            balDisplay.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
-        }
-
-        function clearInputs() {
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemAmt').value = '';
-        }
-
-        function resetAll() {
-            if(confirm("This will clear everything. Are you sure?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        // Service Worker Link
-        if ('service-worker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js');
-            });
+            document.getElementById('balDisplay').innerText = `$${(salary - totalSpent).toFixed(2)}`;
+            document.getElementById('spentDisplay').innerText = `$${totalSpent.toFixed(2)}`;
+            document.getElementById('totalSal').innerText = `$${salary.toFixed(2)}`;
         }
 
         render();
